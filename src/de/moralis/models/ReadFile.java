@@ -74,7 +74,6 @@ public class ReadFile {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
 
         return Integer.valueOf(mySb.toString(), 2);
@@ -139,19 +138,25 @@ public class ReadFile {
             frame.setCompression(flagsSecondByte[7]);
             frame.setEncryption(flagsSecondByte[6]);
             frame.setGroupingIdentity(flagsSecondByte[5]);
-            frame.setEncoding(determineEncoding());
 
-            if (frameId == FrameId.TXXX || frameId == FrameId.WXXX) {
-                long filePointerBefore = getMyFile().getFilePointer();
-                frame.setXxxDescription(readTeminatedString(frame.getSize(), frame.getEncoding()));
-                long filePointerAfter = getMyFile().getFilePointer();
-                int offset = (int) (filePointerAfter - filePointerBefore);
-                frame.setContent(readTeminatedString(frame.getSize(), offset, frame.getEncoding()));
+            if (frameId.name().startsWith("T") || frameId == FrameId.WXXX) {
+                frame.setEncoding(determineEncoding());
+
+                if (frameId == FrameId.TXXX || frameId == FrameId.WXXX) {
+                    long filePointerBefore = getMyFile().getFilePointer();
+                    frame.setXxxDescription(readTeminatedString(frame.getSize(), frame.getEncoding()));
+                    long filePointerAfter = getMyFile().getFilePointer();
+                    int offset = (int) (filePointerAfter - filePointerBefore);
+                    frame.setContent(readTeminatedString(frame.getSize(), offset, frame.getEncoding()));
+                } else {
+                    frame.setContent(readTeminatedString(frame.getSize(), frame.getEncoding()));
+                }
+
+                frames.add(frame);
             } else {
-                frame.setContent(readTeminatedString(frame.getSize(), frame.getEncoding()));
+                System.err.println("Frame can not be processed yet! Skipping Frame (" + id + ")!");
+                getMyFile().skipBytes(frame.getSize());
             }
-
-            frames.add(frame);
         }
     }
 

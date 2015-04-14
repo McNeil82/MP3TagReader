@@ -35,7 +35,7 @@ public class Test {
                 System.err.print(" --- ");
                 System.err.print("'" + b + "'");
                 System.err.print(" --- ");
-                System.err.println("'" + (char) b + "'");
+                System.err.println("'" + (b == 13 ? "\\r" : b == 10 ? "\\n" : (char) b) + "'");
             }
         } catch (IOException e) {
             e.printStackTrace();

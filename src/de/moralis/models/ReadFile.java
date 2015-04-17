@@ -56,32 +56,22 @@ public class ReadFile {
         totalTagSize = calculateTagSizeWithoutHeader() + 10;
     }
 
-    private Integer calculateTagSizeWithoutHeader() {
-        StringBuilder mySb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            try {
-                int b = getMyFile().read();
-                for (int j = 6; j >= 0; j--) {
-                    int pow = (int) Math.pow(2, j);
-
-                    if (b % pow != b) {
-                        mySb.append("1");
-                        b -= pow;
-                    } else {
-                        mySb.append("0");
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private int calculateTagSizeWithoutHeader() {
+        int size = 0;
+        try {
+            size += getMyFile().readByte() << 23;
+            size += getMyFile().readByte() << 15;
+            size += getMyFile().readByte() << 7;
+            size += getMyFile().readByte();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return Integer.valueOf(mySb.toString(), 2);
+        return size;
     }
 
     /**
-     * Liest ein Byte aus, wobei Bit-7 für Unsynchronisation, Bit-6 für Extended header und Bit-5 für
-     * Experimental indicator steht.
+     * Liest ein Byte aus, wobei Bit-7 für Unsynchronisation, Bit-6 für Extended header und Bit-5 für Experimental indicator steht.
      */
     private void setFlags() {
         boolean[] flags = readFlags();
@@ -147,8 +137,10 @@ public class ReadFile {
                     frame.setXxxDescription(readTeminatedString(frame.getSize(), frame.getEncoding()));
                     long filePointerAfter = getMyFile().getFilePointer();
                     int offset = (int) (filePointerAfter - filePointerBefore);
+                    //TODO: content do not need to be terminated
                     frame.setContent(readTeminatedString(frame.getSize(), offset, frame.getEncoding()));
                 } else {
+                    //TODO: content do not need to be terminated
                     frame.setContent(readTeminatedString(frame.getSize(), frame.getEncoding()));
                 }
 
@@ -160,21 +152,16 @@ public class ReadFile {
         }
     }
 
-    private Integer readFrameSize() {
-        StringBuilder mySb = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            try {
-                String h = Integer.toHexString(getMyFile().read());
-                if (h.length() == 1) {
-                    h = "0" + h;
-                }
-                mySb.append(h);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private int readFrameSize() {
+        int size = 0;
+
+        try {
+            size = getMyFile().readInt();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        return Integer.valueOf(mySb.toString(), 16);
+        return size;
     }
 
     private CharSet determineEncoding() throws UnsupportedEncodingException {

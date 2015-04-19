@@ -134,14 +134,12 @@ public class ReadFile {
 
                 if (frameId == FrameId.TXXX || frameId == FrameId.WXXX) {
                     long filePointerBefore = getMyFile().getFilePointer();
-                    frame.setXxxDescription(readTeminatedString(frame.getSize(), frame.getEncoding()));
+                    frame.setXxxDescription(readString(frame.getSize(), frame.getEncoding(), true));
                     long filePointerAfter = getMyFile().getFilePointer();
                     int offset = (int) (filePointerAfter - filePointerBefore);
-                    //TODO: content do not need to be terminated
-                    frame.setContent(readTeminatedString(frame.getSize(), offset, frame.getEncoding()));
+                    frame.setContent(readString(frame.getSize(), offset, frame.getEncoding(), false));
                 } else {
-                    //TODO: content do not need to be terminated
-                    frame.setContent(readTeminatedString(frame.getSize(), frame.getEncoding()));
+                    frame.setContent(readString(frame.getSize(), frame.getEncoding(), false));
                 }
 
                 frames.add(frame);
@@ -236,61 +234,57 @@ public class ReadFile {
         return flags;
     }
 
-    private String readTeminatedString(int frameSize, CharSet encoding) {
-        return readTeminatedString(frameSize, 0, encoding);
+    private String readString(int frameSize, CharSet encoding, boolean terminationRequired) {
+        return readString(frameSize, 0, encoding, terminationRequired);
     }
 
-    private String readTeminatedString(int frameSize, int offset, CharSet encoding) {
-        int maxBytesToRead = frameSize - encoding.getEncodingDescriptionOffset() - offset;
+    private String readString(int frameSize, int offset, CharSet encoding, boolean terminationRequired) {
+        int bytesToRead = frameSize - encoding.getEncodingDescriptionOffset() - offset;
 
-        String terminatedString = "";
-        int terminationBytes = encoding.getBytesPerChar();
-        ArrayList<Byte> contentBytes = new ArrayList<>();
-        boolean terminationInProgress = false;
+        StringBuilder stringBuilder = new StringBuilder();
+        byte[] contentBytes = new byte[bytesToRead];
 
         try {
-            for (int i = 0; i < maxBytesToRead; i++) {
-                byte b = getMyFile().readByte();
-
-                if (Byte.toUnsignedInt(b) == 0 && (i % terminationBytes == 0 || terminationInProgress)) {
-                    terminationBytes--;
-                    terminationInProgress = true;
-                } else {
-                    contentBytes.add(b);
-                    terminationBytes = encoding.getBytesPerChar();
-                    terminationInProgress = false;
-                }
-
-                if (terminationBytes == 0) {
-                    break;
-                }
-            }
+            int bytesRead = getMyFile().read(contentBytes, 0, bytesToRead);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        if (terminationBytes == 0) {
-            try {
-                byte[] cleanContentBytes = new byte[contentBytes.size()];
-                for (int i = 0; i < contentBytes.size(); i++) {
-                    cleanContentBytes[i] = contentBytes.get(i);
-                }
+        boolean terminationByteFound = false;
+        int bytesProcessed = 0;
+        int bytesPerChar = encoding.getBytesPerChar();
 
-                terminatedString = new String(cleanContentBytes, encoding.getName());
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+        try {
+            for (int i = 0; i < contentBytes.length; i += bytesPerChar, bytesProcessed += bytesPerChar) {
+                if (bytesPerChar == 1 && Byte.toUnsignedInt(contentBytes[i]) != 0) {
+                    stringBuilder.append(new String(new byte[]{contentBytes[i]}, encoding.getName()));
+                } else if (bytesPerChar == 2 && (Byte.toUnsignedInt(contentBytes[i]) != 0 || Byte.toUnsignedInt(contentBytes[i + 1]) != 0)) {
+                    stringBuilder.append(new String(new byte[]{contentBytes[i], contentBytes[i + 1]}, encoding.getName()));
+                } else {
+                    bytesProcessed += bytesPerChar;
+                    terminationByteFound = true;
+                    break;
+                }
             }
-        } else {
-            long filePointer = 0;
-            try {
-                filePointer = getMyFile().getFilePointer();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            System.err.println("Missing termination byte(s) at " + filePointer + "! Content will be ignored!");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
-        return terminatedString;
+        long filePointer = 0;
+        try {
+            filePointer = getMyFile().getFilePointer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (terminationRequired && !terminationByteFound) {
+            System.err.println("Required termination byte(s) missing at " + filePointer + "! Content will be ignored!");
+            return "";
+        } else if (!terminationRequired && terminationByteFound && bytesToRead != bytesProcessed) {
+            System.err.println("Termination byte(s) found at " + filePointer + "! Following content will be ignored!");
+        }
+
+        return stringBuilder.toString();
     }
 
     public RandomAccessFile getMyFile() {
@@ -306,6 +300,9 @@ public class ReadFile {
     }
 
     public void setUnsynchronisation(boolean unsynchronisation) {
+        if (unsynchronisation) {
+            System.err.println("Unsynchronisation is not supported yet!");
+        }
         this.unsynchronisation = unsynchronisation;
     }
 
@@ -314,6 +311,9 @@ public class ReadFile {
     }
 
     public void setExtendedHeader(boolean extendedHeader) {
+        if (extendedHeader) {
+            System.err.println("Extended header is not supported yet!");
+        }
         this.extendedHeader = extendedHeader;
     }
 
@@ -322,6 +322,9 @@ public class ReadFile {
     }
 
     public void setExperimentalIndicator(boolean experimentalIndicator) {
+        if (experimentalIndicator) {
+            System.err.println("Experimental indicator is not supported yet!");
+        }
         this.experimentalIndicator = experimentalIndicator;
     }
 }

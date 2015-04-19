@@ -52,6 +52,9 @@ public class Frame {
     }
 
     public void setTagAlterPreservation(boolean tagAlterPreservation) {
+        if (tagAlterPreservation) {
+            System.err.println("Tag alter preservation is not supported yet!");
+        }
         this.tagAlterPreservation = tagAlterPreservation;
     }
 
@@ -60,6 +63,9 @@ public class Frame {
     }
 
     public void setFileAlterPreservation(boolean fileAlterPreservation) {
+        if (fileAlterPreservation) {
+            System.err.println("File alter preservation is not supported yet!");
+        }
         this.fileAlterPreservation = fileAlterPreservation;
     }
 
@@ -68,6 +74,9 @@ public class Frame {
     }
 
     public void setReadOnly(boolean readOnly) {
+        if (readOnly) {
+            System.err.println("Read only is not supported yet!");
+        }
         this.readOnly = readOnly;
     }
 
@@ -76,6 +85,9 @@ public class Frame {
     }
 
     public void setCompression(boolean compression) {
+        if (compression) {
+            System.err.println("Compression is not supported yet!");
+        }
         this.compression = compression;
     }
 
@@ -84,6 +96,9 @@ public class Frame {
     }
 
     public void setEncryption(boolean encryption) {
+        if (encryption) {
+            System.err.println("Encryption is not supported yet!");
+        }
         this.encryption = encryption;
     }
 
@@ -92,6 +107,9 @@ public class Frame {
     }
 
     public void setGroupingIdentity(boolean groupingIdentity) {
+        if (groupingIdentity) {
+            System.err.println("Grouping identity is not supported yet!");
+        }
         this.groupingIdentity = groupingIdentity;
     }
 

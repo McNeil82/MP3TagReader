@@ -242,31 +242,30 @@ public class ReadFile {
         int bytesToRead = frameSize - encoding.getEncodingDescriptionOffset() - offset;
 
         StringBuilder stringBuilder = new StringBuilder();
-        byte[] contentBytes = new byte[bytesToRead];
-
-        try {
-            int bytesRead = getMyFile().read(contentBytes, 0, bytesToRead);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         boolean terminationByteFound = false;
         int bytesProcessed = 0;
         int bytesPerChar = encoding.getBytesPerChar();
 
         try {
-            for (int i = 0; i < contentBytes.length; i += bytesPerChar, bytesProcessed += bytesPerChar) {
-                if (bytesPerChar == 1 && Byte.toUnsignedInt(contentBytes[i]) != 0) {
-                    stringBuilder.append(new String(new byte[]{contentBytes[i]}, encoding.getName()));
-                } else if (bytesPerChar == 2 && (Byte.toUnsignedInt(contentBytes[i]) != 0 || Byte.toUnsignedInt(contentBytes[i + 1]) != 0)) {
-                    stringBuilder.append(new String(new byte[]{contentBytes[i], contentBytes[i + 1]}, encoding.getName()));
+            for (int i = 0; i < bytesToRead; i += bytesPerChar, bytesProcessed += bytesPerChar) {
+
+                byte firstByte = getMyFile().readByte();
+                byte secondByte = 0x00;
+                if (bytesPerChar == 2) {
+                    secondByte = getMyFile().readByte();
+                }
+
+                if (bytesPerChar == 1 && Byte.toUnsignedInt(firstByte) != 0) {
+                    stringBuilder.append(new String(new byte[]{firstByte}, encoding.getName()));
+                } else if (bytesPerChar == 2 && (Byte.toUnsignedInt(firstByte) != 0 || Byte.toUnsignedInt(secondByte) != 0)) {
+                    stringBuilder.append(new String(new byte[]{firstByte, secondByte}, encoding.getName()));
                 } else {
                     bytesProcessed += bytesPerChar;
                     terminationByteFound = true;
                     break;
                 }
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -282,6 +281,11 @@ public class ReadFile {
             return "";
         } else if (!terminationRequired && terminationByteFound && bytesToRead != bytesProcessed) {
             System.err.println("Termination byte(s) found at " + filePointer + "! Following content will be ignored!");
+            try {
+                getMyFile().skipBytes(bytesToRead - bytesProcessed);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return stringBuilder.toString();

@@ -59,8 +59,8 @@ public class ReadFile {
     private int calculateTagSizeWithoutHeader() {
         int size = 0;
         try {
-            size += getMyFile().readByte() << 23;
-            size += getMyFile().readByte() << 15;
+            size += getMyFile().readByte() << 21;
+            size += getMyFile().readByte() << 14;
             size += getMyFile().readByte() << 7;
             size += getMyFile().readByte();
         } catch (IOException e) {

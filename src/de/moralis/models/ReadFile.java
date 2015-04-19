@@ -111,12 +111,14 @@ public class ReadFile {
             boolean[] flagsFirstByte = readFlags();
             boolean[] flagsSecondByte = readFlags();
 
-            FrameId frameId;
+            FrameId frameId = null;
             try {
                 frameId = FrameId.valueOf(id);
             } catch (IllegalArgumentException e) {
-                System.err.println("Unknown Frame-ID or padding found (" + id + ")! Terminating tag reading!");
-                break;
+                if (size == 0) {
+                    System.err.println("Padding found (" + id + ")! Terminating tag reading!");
+                    break;
+                }
             }
 
             Frame frame = new Frame();
@@ -129,7 +131,7 @@ public class ReadFile {
             frame.setEncryption(flagsSecondByte[6]);
             frame.setGroupingIdentity(flagsSecondByte[5]);
 
-            if (frameId.name().startsWith("T") || frameId == FrameId.WXXX) {
+            if (frameId != null && frameId.name().startsWith("T") || frameId == FrameId.WXXX) {
                 frame.setEncoding(determineEncoding());
 
                 if (frameId == FrameId.TXXX || frameId == FrameId.WXXX) {

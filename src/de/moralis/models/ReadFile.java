@@ -116,7 +116,7 @@ public class ReadFile {
                 frameId = FrameId.valueOf(id);
             } catch (IllegalArgumentException e) {
                 if (size == 0) {
-                    System.err.println("Padding found (" + id + ")! Terminating tag reading!");
+                    System.err.println("Padding found (" + id + ")! Terminating tag reading at " + getMyFile().getFilePointer() + "!");
                     break;
                 }
             }

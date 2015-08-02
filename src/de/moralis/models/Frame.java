@@ -1,5 +1,7 @@
 package de.moralis.models;
 
+import static java.lang.System.lineSeparator;
+
 public class Frame {
 
     private FrameId id;
@@ -16,7 +18,7 @@ public class Frame {
 
     @Override
     public String toString() {
-        return "Frame{" +
+        return lineSeparator() + "Frame{" +
                 "id=" + id +
                 ", size=" + size +
                 ", tagAlterPreservation=" + tagAlterPreservation +
@@ -28,7 +30,7 @@ public class Frame {
                 ", encoding='" + encoding + '\'' +
                 ", content='" + content + '\'' +
                 ", xxxDescription='" + xxxDescription + '\'' +
-                "}\n";
+                "}";
     }
 
     public FrameId getId() {

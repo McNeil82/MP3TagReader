@@ -1,9 +1,9 @@
-package de.moralis.models;
+package de.moralis.mp3tagreader;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class Test {
+public class Mp3TagReader {
 
     public static void main(String[] args) {
         if (args.length != 1) {

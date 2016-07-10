@@ -1,4 +1,8 @@
-package de.moralis.models;
+package de.moralis.mp3tagreader;
+
+import de.moralis.mp3tagreader.model.CharSet;
+import de.moralis.mp3tagreader.model.Frame;
+import de.moralis.mp3tagreader.model.FrameId;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

@@ -1,4 +1,4 @@
-package de.moralis.models;
+package de.moralis.mp3tagreader.model;
 
 public enum CharSet {
     ISO_8859_1("ISO-8859-1", 1, 1),

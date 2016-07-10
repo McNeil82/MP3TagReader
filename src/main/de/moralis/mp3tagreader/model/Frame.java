@@ -1,4 +1,4 @@
-package de.moralis.models;
+package de.moralis.mp3tagreader.model;
 
 import static java.lang.System.lineSeparator;
 

@@ -1,0 +1,223 @@
+{
+  "styles": [
+    "Hardcore"
+  ],
+  "series": [],
+  "labels": [
+    {
+      "name": "Firewall Div.",
+      "entity_type": "1",
+      "catno": "SFCD-0015",
+      "resource_url": "https://api.discogs.com/labels/46228",
+      "id": 46228,
+      "entity_type_name": "Label"
+    }
+  ],
+  "year": 2002,
+  "community": {
+    "status": "Accepted",
+    "rating": {
+      "count": 3,
+      "average": 4.0
+    },
+    "have": 26,
+    "contributors": [
+      {
+        "username": "plasticXO",
+        "resource_url": "https://api.discogs.com/users/plasticXO"
+      },
+      {
+        "username": "warfish",
+        "resource_url": "https://api.discogs.com/users/warfish"
+      },
+      {
+        "username": "JYoh",
+        "resource_url": "https://api.discogs.com/users/JYoh"
+      },
+      {
+        "username": "J-ohan",
+        "resource_url": "https://api.discogs.com/users/J-ohan"
+      }
+    ],
+    "want": 11,
+    "submitter": {
+      "username": "plasticXO",
+      "resource_url": "https://api.discogs.com/users/plasticXO"
+    },
+    "data_quality": "Needs Vote"
+  },
+  "artists": [
+    {
+      "join": "",
+      "name": "Dir en grey",
+      "anv": "",
+      "tracks": "",
+      "role": "",
+      "resource_url": "https://api.discogs.com/artists/348163",
+      "id": 348163
+    }
+  ],
+  "images": [
+    {
+      "uri": "",
+      "height": 159,
+      "width": 180,
+      "resource_url": "",
+      "type": "secondary",
+      "uri150": ""
+    }
+  ],
+  "format_quantity": 1,
+  "id": 1567104,
+  "genres": [
+    "Rock"
+  ],
+  "thumb": "",
+  "num_for_sale": 4,
+  "title": "Six Ugly",
+  "date_changed": "2012-11-10T09:03:59-08:00",
+  "master_id": 490276,
+  "lowest_price": 19.99,
+  "status": "Accepted",
+  "released_formatted": "31 Jul 2002",
+  "estimated_weight": 85,
+  "master_url": "https://api.discogs.com/masters/490276",
+  "released": "2002-07-31",
+  "date_added": "2008-12-10T15:13:28-08:00",
+  "tracklist": [
+    {
+      "duration": "",
+      "position": "1",
+      "type_": "track",
+      "title": "Mr.Newsman"
+    },
+    {
+      "duration": "",
+      "position": "2",
+      "type_": "track",
+      "title": "Ugly"
+    },
+    {
+      "duration": "",
+      "position": "3",
+      "type_": "track",
+      "title": "Hades"
+    },
+    {
+      "duration": "",
+      "position": "4",
+      "type_": "track",
+      "title": "Umbrella"
+    },
+    {
+      "duration": "",
+      "position": "5",
+      "type_": "track",
+      "title": "Children"
+    },
+    {
+      "duration": "",
+      "position": "6",
+      "type_": "track",
+      "title": "\u79d2\u300c\u300d\u6df1"
+    }
+  ],
+  "extraartists": [
+    {
+      "join": "",
+      "name": "Toshiya (2)",
+      "anv": "",
+      "tracks": "",
+      "role": "Bass",
+      "resource_url": "https://api.discogs.com/artists/1056389",
+      "id": 1056389
+    },
+    {
+      "join": "",
+      "name": "Die (7)",
+      "anv": "",
+      "tracks": "1, 5",
+      "role": "Composed By",
+      "resource_url": "https://api.discogs.com/artists/1009535",
+      "id": 1009535
+    },
+    {
+      "join": "",
+      "name": "Kaoru",
+      "anv": "\u85ab",
+      "tracks": "6",
+      "role": "Composed By",
+      "resource_url": "https://api.discogs.com/artists/527406",
+      "id": 527406
+    },
+    {
+      "join": "",
+      "name": "Kyo (5)",
+      "anv": "\u4eac",
+      "tracks": "3",
+      "role": "Composed By",
+      "resource_url": "https://api.discogs.com/artists/1006266",
+      "id": 1006266
+    },
+    {
+      "join": "",
+      "name": "Shinya (4)",
+      "anv": "",
+      "tracks": "2, 4",
+      "role": "Composed By",
+      "resource_url": "https://api.discogs.com/artists/1056387",
+      "id": 1056387
+    },
+    {
+      "join": "",
+      "name": "Shinya (4)",
+      "anv": "",
+      "tracks": "",
+      "role": "Drums",
+      "resource_url": "https://api.discogs.com/artists/1056387",
+      "id": 1056387
+    },
+    {
+      "join": "",
+      "name": "Die (7)",
+      "anv": "",
+      "tracks": "",
+      "role": "Guitar",
+      "resource_url": "https://api.discogs.com/artists/1009535",
+      "id": 1009535
+    },
+    {
+      "join": "",
+      "name": "Kaoru",
+      "anv": "\u85ab",
+      "tracks": "",
+      "role": "Guitar",
+      "resource_url": "https://api.discogs.com/artists/527406",
+      "id": 527406
+    },
+    {
+      "join": "",
+      "name": "Kyo (5)",
+      "anv": "\u4eac",
+      "tracks": "",
+      "role": "Voice",
+      "resource_url": "https://api.discogs.com/artists/1006266",
+      "id": 1006266
+    }
+  ],
+  "country": "Japan",
+  "identifiers": [],
+  "companies": [],
+  "uri": "https://www.discogs.com/Dir-en-grey-Six-Ugly/release/1567104",
+  "formats": [
+    {
+      "descriptions": [
+        "Mini-Album"
+      ],
+      "name": "CD",
+      "qty": "1"
+    }
+  ],
+  "resource_url": "https://api.discogs.com/releases/1567104",
+  "data_quality": "Needs Vote"
+}

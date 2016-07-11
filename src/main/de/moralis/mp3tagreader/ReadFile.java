@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ReadFile {
 
-    private RandomAccessFile myFile = null;
+    private RandomAccessFile file = null;
 
     private String version = "";
 
@@ -27,17 +27,22 @@ public class ReadFile {
 
     private List<Frame> frames = new ArrayList<>();
 
-    public ReadFile(RandomAccessFile myFile) throws IOException {
-        setMyFile(myFile);
+    public ReadFile(RandomAccessFile file) throws IOException {
+        this.file = file;
         init();
     }
 
     private void init() throws IOException {
-        if (isID3v2()) {
-            setVersion();
-            setFlags();
-            setTagSize();
-            setFrames();
+        try {
+            if (isID3v2()) {
+                setVersion();
+                checkVersion();
+                setFlags();
+                setTagSize();
+                setFrames();
+            }
+        } finally {
+            file.close();
         }
     }
 
@@ -63,10 +68,10 @@ public class ReadFile {
     private int calculateTagSizeWithoutHeader() {
         int size = 0;
         try {
-            size += getMyFile().readByte() << 21;
-            size += getMyFile().readByte() << 14;
-            size += getMyFile().readByte() << 7;
-            size += getMyFile().readByte();
+            size += file.readByte() << 21;
+            size += file.readByte() << 14;
+            size += file.readByte() << 7;
+            size += file.readByte();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,7 +97,7 @@ public class ReadFile {
         StringBuilder mySb = new StringBuilder("2.");
         for (int i = 0; i < 2; i++) {
             try {
-                mySb.append(getMyFile().read());
+                mySb.append(file.read());
                 if (i == 0) {
                     mySb.append(".");
                 }
@@ -104,12 +109,18 @@ public class ReadFile {
         this.version = mySb.toString();
     }
 
+    private void checkVersion() {
+        if (!"2.3.0".equals(getVersion())) {
+            throw new UnsupportedOperationException("Unsupported ID3v2 version: " + getVersion() + "!");
+        }
+    }
+
     public List<Frame> getFrames() {
         return frames;
     }
 
     private void setFrames() throws IOException {
-        while (getMyFile().getFilePointer() < totalTagSize) {
+        while (file.getFilePointer() < totalTagSize) {
             String id = readChars(4);
             Integer size = readFrameSize();
             boolean[] flagsFirstByte = readFlags();
@@ -120,7 +131,7 @@ public class ReadFile {
                 frameId = FrameId.valueOf(id);
             } catch (IllegalArgumentException e) {
                 if (size == 0) {
-                    System.err.println("Padding found (" + id + ")! Terminating tag reading at " + getMyFile().getFilePointer() + "!");
+                    System.err.println("Padding found (" + id + ")! Terminating tag reading at " + file.getFilePointer() + "!");
                     break;
                 }
             }
@@ -139,9 +150,9 @@ public class ReadFile {
                 frame.setEncoding(determineEncoding());
 
                 if (frameId == FrameId.TXXX || frameId == FrameId.WXXX) {
-                    long filePointerBefore = getMyFile().getFilePointer();
+                    long filePointerBefore = file.getFilePointer();
                     frame.setXxxDescription(readString(frame.getSize(), frame.getEncoding(), true));
-                    long filePointerAfter = getMyFile().getFilePointer();
+                    long filePointerAfter = file.getFilePointer();
                     int offset = (int) (filePointerAfter - filePointerBefore);
                     frame.setContent(readString(frame.getSize(), offset, frame.getEncoding(), false));
                 } else {
@@ -151,7 +162,7 @@ public class ReadFile {
                 frames.add(frame);
             } else {
                 System.err.println("Frame can not be processed yet! Skipping Frame (" + id + ")!");
-                getMyFile().skipBytes(frame.getSize());
+                file.skipBytes(frame.getSize());
             }
         }
     }
@@ -160,7 +171,7 @@ public class ReadFile {
         int size = 0;
 
         try {
-            size = getMyFile().readInt();
+            size = file.readInt();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -173,7 +184,7 @@ public class ReadFile {
 
         int encodingByte = 0;
         try {
-            encodingByte = getMyFile().read();
+            encodingByte = file.read();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -193,7 +204,7 @@ public class ReadFile {
         int[] hex = new int[2];
         for (int i = 0; i < 2; i++) {
             try {
-                hex[i] = getMyFile().read();
+                hex[i] = file.read();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -212,7 +223,7 @@ public class ReadFile {
         StringBuilder mySb = new StringBuilder();
         for (int i = 0; i < bytes; i++) {
             try {
-                mySb.append((char) getMyFile().read());
+                mySb.append((char) file.read());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -224,7 +235,7 @@ public class ReadFile {
         boolean[] flags = new boolean[8];
 
         try {
-            int b = getMyFile().read();
+            int b = file.read();
             for (int i = 7; i >= 0; i--) {
                 int pow = (int) Math.pow(2, i);
 
@@ -255,10 +266,10 @@ public class ReadFile {
         try {
             for (int i = 0; i < bytesToRead; i += bytesPerChar, bytesProcessed += bytesPerChar) {
 
-                byte firstByte = getMyFile().readByte();
+                byte firstByte = file.readByte();
                 byte secondByte = 0x00;
                 if (bytesPerChar == 2) {
-                    secondByte = getMyFile().readByte();
+                    secondByte = file.readByte();
                 }
 
                 if (bytesPerChar == 1 && Byte.toUnsignedInt(firstByte) != 0) {
@@ -277,7 +288,7 @@ public class ReadFile {
 
         long filePointer = 0;
         try {
-            filePointer = getMyFile().getFilePointer();
+            filePointer = file.getFilePointer();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -288,21 +299,13 @@ public class ReadFile {
         } else if (!terminationRequired && terminationByteFound && bytesToRead != bytesProcessed) {
             System.err.println("Termination byte(s) found at " + filePointer + "! Following content will be ignored!");
             try {
-                getMyFile().skipBytes(bytesToRead - bytesProcessed);
+                file.skipBytes(bytesToRead - bytesProcessed);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         return stringBuilder.toString();
-    }
-
-    public RandomAccessFile getMyFile() {
-        return myFile;
-    }
-
-    public void setMyFile(RandomAccessFile myFile) {
-        this.myFile = myFile;
     }
 
     public boolean hasUnsynchronisation() {

@@ -24,6 +24,8 @@ public class DiscogsClient {
         get.addHeader("Accept", ACCEPT);
         get.addHeader("User-Agent", USER_AGENT);
 
+        Release release = null;
+
         try {
             HttpResponse response = httpClient.execute(get);
 
@@ -31,7 +33,7 @@ public class DiscogsClient {
             if (statusCode == 200) {
                 InputStream content = response.getEntity().getContent();
                 ReleaseObjectMapper releaseObjectMapper = new ReleaseObjectMapper();
-                return releaseObjectMapper.mapFromJson(content);
+                release = releaseObjectMapper.mapFromJson(content);
             }
         } catch (IOException error) {
             error.printStackTrace();
@@ -43,6 +45,6 @@ public class DiscogsClient {
             }
         }
 
-        return null;
+        return release;
     }
 }

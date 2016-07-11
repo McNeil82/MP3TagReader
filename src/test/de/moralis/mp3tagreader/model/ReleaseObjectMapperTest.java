@@ -16,34 +16,36 @@ public class ReleaseObjectMapperTest {
     public void releaseIsParsed() throws IOException {
         InputStream jsonInputStream = getClass().getResourceAsStream("example.json");
         Release release = releaseObjectMapper.mapFromJson(jsonInputStream);
-        assertEquals(release.getTitle(), "Six Ugly");
-        assertEquals(release.getYear(), "2002");
+        assertEquals(release.getTitle(), "Tour09 Feast Of V Senses");
+        assertEquals(release.getYear(), "2009");
 
         List<Artist> artists = release.getArtists();
         assertEquals(artists.size(), 1);
-        assertEquals(artists.get(0).getName(), "Dir en grey");
+        assertEquals(artists.get(0).getName(), "DIR EN GREY");
 
         List<Label> labels = release.getLabels();
         assertEquals(labels.size(), 1);
-        assertEquals(labels.get(0).getName(), "Firewall Div.");
+        assertEquals(labels.get(0).getName(), "sun-krad");
 
         List<String> genres = release.getGenres();
         assertEquals(genres.size(), 1);
         assertEquals(genres.get(0), "Rock");
 
         List<Track> tracklist = release.getTracklist();
-        assertEquals(tracklist.size(), 6);
-        assertEquals(tracklist.get(0).getPosition(), "1");
-        assertEquals(tracklist.get(0).getTitle(), "Mr.Newsman");
-        assertEquals(tracklist.get(1).getPosition(), "2");
-        assertEquals(tracklist.get(1).getTitle(), "Ugly");
-        assertEquals(tracklist.get(2).getPosition(), "3");
-        assertEquals(tracklist.get(2).getTitle(), "Hades");
-        assertEquals(tracklist.get(3).getPosition(), "4");
-        assertEquals(tracklist.get(3).getTitle(), "Umbrella");
-        assertEquals(tracklist.get(4).getPosition(), "5");
-        assertEquals(tracklist.get(4).getTitle(), "Children");
-        assertEquals(tracklist.get(5).getPosition(), "6");
-        assertEquals(tracklist.get(5).getTitle(), "秒「」深");
+        assertEquals(tracklist.size(), 59);
+        assertEquals(tracklist.get(0).getPosition(), "");
+        assertEquals(tracklist.get(0).getTitle(), "2009.5.3 新木場Studio Coast(追加公演)");
+        assertEquals(tracklist.get(1).getPosition(), "DVD1-1");
+        assertEquals(tracklist.get(1).getTitle(), "Sa Bir");
+        assertEquals(tracklist.get(8).getPosition(), "DVD1-8");
+        assertEquals(tracklist.get(8).getTitle(), "凌辱の雨");
+        assertEquals(tracklist.get(20).getPosition(), "DVD1-20");
+        assertEquals(tracklist.get(20).getTitle(), "Clever Sleazoid");
+        assertEquals(tracklist.get(31).getPosition(), "DVD2-10");
+        assertEquals(tracklist.get(31).getTitle(), "C");
+        assertEquals(tracklist.get(42).getPosition(), "DVD2-20");
+        assertEquals(tracklist.get(42).getTitle(), "Child Prey");
+        assertEquals(tracklist.get(53).getPosition(), "CD-8");
+        assertEquals(tracklist.get(53).getTitle(), "Repetition Of Hatred");
     }
 }

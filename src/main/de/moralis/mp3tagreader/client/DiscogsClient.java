@@ -1,5 +1,7 @@
 package de.moralis.mp3tagreader.client;
 
+import de.moralis.mp3tagreader.model.Release;
+import de.moralis.mp3tagreader.model.ReleaseObjectMapper;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -14,7 +16,7 @@ public class DiscogsClient {
     private static final String ACCEPT = "application/vnd.discogs.v2.html+json";
     private static final String USER_AGENT = "MP3TagReader/1.0";
 
-    public InputStream getRelease(String releaseNumber) {
+    public Release getRelease(String releaseNumber) {
         String fullUrl = URL + releaseNumber;
 
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -27,7 +29,9 @@ public class DiscogsClient {
 
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode == 200) {
-                response.getEntity().getContent();
+                InputStream content = response.getEntity().getContent();
+                ReleaseObjectMapper releaseObjectMapper = new ReleaseObjectMapper();
+                return releaseObjectMapper.mapFromJson(content);
             }
         } catch (IOException error) {
             error.printStackTrace();
